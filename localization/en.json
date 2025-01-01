@@ -1,0 +1,9 @@
+{
+    "Quiz":{
+        "title":"Title",
+        "question":"Question",
+        "option":"Option",
+        "save" : "Save"
+    }
+}
+
