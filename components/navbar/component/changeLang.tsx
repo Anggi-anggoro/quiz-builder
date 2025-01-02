@@ -1,4 +1,5 @@
 'use client'
+import TranslateText from "@/components/utils/translator"
 import { usePathname, useRouter } from "next/navigation"
 import { ChangeEvent } from "react"
 
@@ -13,13 +14,16 @@ export default function ChangeLang({locale} : {locale :string}) {
     }
 
     return (
+        <div>
+            <label><TranslateText comp="Header" text="language"/>:</label>
         <select value={locale} onChange={handleChangeLang}>
             <option value="en">
-                EN
+                <TranslateText comp="Header" text="english"/>
             </option>
             <option value="ar">
-                AR
+                <TranslateText comp="Header" text="arabic"/>
             </option>
         </select>
+        </div>
     )
 }

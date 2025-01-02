@@ -57,6 +57,36 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  .custom-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .custom-prev {
+    left: -40px;
+  }
+  
+  .custom-next {
+    right: -40px;
+  }
+  
+  .custom-arrow:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+  .slick-arrow::after {
+    width: 100px;
+  }
+
 }
 
 @layer base {

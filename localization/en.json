@@ -3,7 +3,40 @@
         "title":"Title",
         "question":"Question",
         "option":"Option",
-        "save" : "Save"
+        "save" : "Save",
+        "add-question":"Add question",
+        "delete" : "Delete",
+        "edit" : "Edit",
+        "question-list" : "Question List",
+        "take-quiz" : "Take Quiz",
+        "submit" : "Submit"
+    },
+    "Header" : {
+        "sign-in":"Sign-in",
+        "sign-out":"Sign-out",
+        "sign-up":"Sign-up",
+        "language": "Languange",
+        "english":"English",
+        "arabic":"Arabic",
+        "home":"Home",
+        "hey":"Hey"
+    },
+    "Homepage" : {
+        "welcome" : "Welcome",
+        "get-started" : "Get Started",
+        "take-quiz": "Take Quiz",
+        "build-quiz" : "Build Quiz"
+    },
+    "Login" : {
+        "no-account" : "Don't have an account?",
+        "email": "Email",
+        "password": "Password",
+        "forgot": "Forgot Password",
+        "your" : "Your",
+        "already-account" : "Already have an account?",
+        "signing-in" :"Signing In...",
+        "submiting" : "Submitting..."
     }
+
 }
 

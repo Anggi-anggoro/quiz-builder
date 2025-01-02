@@ -4,195 +4,193 @@ import { createClient } from "@/utils/supabase/client";
 import { useLocale, useTranslations } from "next-intl";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import translateText from "../utils/translator";
-import { quizProps } from "../utils/interface";
+import { quizList, quizProps } from "../utils/interface";
 
-export default function QuizBuilder(props: {email: string | undefined }) {
-  const [question, setQuestion] = useState<quizProps | undefined | null>();
-  const [listQuiz, setListQuiz] = useState<quizProps[] | undefined>();
-  
 
-  const [options, setOptions] = useState([""]);
+
+export default function QuizBuilder(props: { email: string | undefined }) {
+  const initQUestion: quizProps = {
+    id:undefined,
+    answer: null,
+    title_ar: null,
+    answer_option_ar: [""],
+    answer_option_en: [""],
+    question_ar: null,
+    question_en: null,
+    title_en: null,
+    email: props.email
+  }
+
+  const [listQuestion, setListQuestion] = useState<quizProps[]>([initQUestion]);
+  const [listQuiz, setListQuiz] = useState<quizList[] | undefined>([])
+  const [questTitle, setQuestTitle] = useState<string>('')
   const t = useTranslations("Quiz")
   const locale = useLocale()
-  const otherLang = locale == 'ar' ? 'en' : 'ar';
 
-  const addOption = () => {
-    setOptions([...options, ""]);
+  const addOption = (index: number) => {
+    setListQuestion(
+      listQuestion.map((opt: quizProps, idx) => (idx === index ? { ...opt, [`answer_option_${locale}`]: [...(opt.answer_option_en ?? []), ""] } : opt))
+    )
   };
 
-  const updateOption = (index: number, newValue: string) => {
-    setOptions(
-      options.map((opt, idx) => (idx === index ? newValue : opt))
-    );
-    saveQuestion(options.slice(0,options.length-1), `answer_option_${locale}`)
-
+  const updateOption = (index: number, newValue: string, questionIdx: number) => {
+    const newOption = listQuestion[questionIdx].answer_option_en?.map((opt,idx)=> ( idx == index ? newValue: opt ))
+    setListQuestion(
+      listQuestion.map((opt: quizProps, idx) => (idx === questionIdx ? { ...opt, [`answer_option_${locale}`]: newOption } : opt))
+    )
   };
-  const saveMultiLangQuestion = (value: any) => {
-    const translatedTitle = translateText(value[`title_${locale}`], locale, otherLang)
-    console.log(translatedTitle)
-    //     setQuestion((question : any) => ({
-    //     ...question,
-    //     // [`${prop}_${locale}`]: value,
-    //     // [`${prop}_${otherLang}`]: value,
-    //   }));
+  const addQuestion = () => {
+    setListQuestion([...listQuestion, initQUestion])
   };
 
-
-  const saveQuestion = (value: string | number | string[], prop: string) => {
-
-    setQuestion((question: any) => ({
-      ...question,
-      [prop]: value,
-    }));
+  const saveQuestion = (value: string | number | string[], prop: string, index: number) => {
+    setListQuestion(
+      listQuestion.map((opt: quizProps, idx) => (idx === index ? { ...opt, [prop]: value } : opt))
+    )
   };
 
   const saveQuiz = async (e: any) => {
     e.preventDefault()
-    console.log(question)
     const supabase = createClient()
-    if(!question?.id) {
-      const { error } = await supabase.from('Quiz').insert({
-        answer:question?.answer,
-        title_ar: question?.title_ar,
-        title_en: question?.title_en,
-        answer_option_ar: question?.answer_option_ar,
-        answer_option_en: question?.answer_option_en,
-        question_ar: question?.question_ar,
-        question_en: question?.question_en,
-        email: props.email
-      })
-      console.log(error)
-    } else {
-      const {error} = await supabase.from('Quiz').update(question).eq('id', question?.id)
-      console.log(error)
-    }
-    setQuestion({
-      id: null,
-      answer: null,
-      title_ar: null,
-      answer_option_ar: null,
-      answer_option_en: null,
-      question_ar: null,
-      question_en: null,
-      title_en: null,
-      email: props.email
+    listQuestion.map(async ({ id, ...opt }: quizProps) => {
+      const result: Record<string, any> = {
+        ...opt,
+        [`title_${locale}`]: questTitle,
+      };
+      if (id != null) {
+        result.id = id;
+        const {error} = await supabase.from('Quiz').update(result).eq('id', id)
+        console.log(error)
+      } else {
+        const {error} = await supabase.from('Quiz').insert(result)
+        console.log(error)
+      }
     })
-    setOptions([""])
-    getQuizList()
+    setListQuestion([initQUestion])
+    getQuizList()  
   };
 
-  const getQuizList = async()=> {
+  const getQuizList = async () => {
     const supabase = await createClient()
-    const { data } = await supabase.from("Quiz").select().eq('email', props.email) 
-    const quiz = data as quizProps[]
-    setListQuiz(quiz?.sort((a,b)=> a.id! - b.id!))
-  }
-
-  const saveAnswer = (value: number) => {
-    saveQuestion(value, 'answer')
+    const { data } = await supabase.from("Quiz").select().eq('email', props.email).order(`title_${locale}`)
+    
+    const quiz = new Set (data?.map((item : quizList)=>({
+      title : item[`title_${locale}`],
+      id: item.id,
+      question : item[`question_${locale}`]
+    })) as quizList[] | undefined)
+    setListQuiz(Array.from(quiz))
   }
 
   useEffect(() => {
-    setQuestion((question: any) => ({
-      ...question,
-      ['email']: props.email,
-    }));
+
     getQuizList()
 
   }, [])
-  
-  const handleEdit =(id:number) => {
-    const quiz : quizProps | undefined = listQuiz?.find((item) => (
-      item.id === id
-    ))
-    setQuestion(quiz)
-    if(quiz?.answer_option_en) {
-      setOptions([...quiz?.answer_option_en,""])
-    }
-    console.log(options)
+
+  const handleEdit = async (title: string | undefined | null) => {
+    const supabase = await createClient()
+    const { data,error } = await supabase.from("Quiz").select().eq(`title_${locale}`, title).order('id')
+    console.log(error)
+    console.log(data)
+    const questList = data as quizProps[]
+    console.log(questList)
+    setListQuestion(questList)
+    setQuestTitle(questList[0][`title_${locale}`])  
+
   }
 
-  const handleDelete = async(id:number) => {
+  const handleDelete = async (id: number) => {
     const supabase = await createClient()
-    const { data } = await supabase.from("Quiz").delete().eq('id', id) 
+    const { data,error } = await supabase.from("Quiz").delete().eq('id', id)
+    console.log(error)
     console.log(data)
     getQuizList()
   }
 
+
   return (
-    <div className="flex">
+    <div className="flex pb-11">
       <div className="overflow-y-auto max-h-[80vh] p-8 mt-6 w-1/5">
-        {listQuiz?.map((item : any, idx)=> (
-          <div key={idx} className="p-4 border flex justify-between  border-black">
+        <h2 className="text-center mb-2 font-bold">{t('question-list')}</h2>
+        {listQuiz?.map((item: quizList, idx) => (
+          <div key={idx} className="p-4 py-7 border border-b-0 last:border-b flex justify-between  border-black">
             <div>
-            <h2 className="font-bold">
-              {item[`title_${locale}`]}
-            </h2>
-            <div className="flex justify-between">
-              <p>{item[`question_${locale}`]}</p>  
-            </div>
+              <h2 className="font-bold mb-2">
+                <span className="font-normal mr-1">{t('title')}:</span>{item.title}
+              </h2>
+              <p className="text-sm"><span className="mr-1">{t('question')}:</span>{item.question}</p>
             </div>
             <div className="flex flex-col ">
-                  <button onClick={()=>handleDelete(item.id)} className="border border-black mb-2 p-1 rounded-md shadow-md text-[9px]">Delete</button>
-                  <button onClick={()=>handleEdit(item.id)} className="border border-black p-1 rounded-md shadow-md text-[9px]">Edit</button>
-               </div>
+              <button onClick={() => handleDelete(item.id)} className="border border-black mb-2 p-1 rounded-md shadow-md text-[9px]">{t('delete')}</button>
+              <button onClick={() => handleEdit(item.title)} className="border border-black p-1 rounded-md shadow-md text-[9px]">{t('edit')}</button>
+            </div>
           </div>
         ))}
       </div>
-      <div className="w-1/4 mx-auto">
-        <form onSubmit={(e) => saveQuiz(e)}>
-          <div className="flex justify-between mb-4 ">
-            <label>{t('title')}</label>
-            <input
-              required
-              type="text"
-              placeholder={t('title')}
-              value={locale == 'en' ? question?.title_en ?? "" : question?.title_ar ?? ""}
-              onChange={(e) => saveQuestion(e.target.value, `title_${locale}`)}
-              className="placeholder:text-sm text-center p  border border-1 py-1 rounded-md  text-black border-black"
-            />
-          </div>
-          <div className="flex justify-between mb-4">
-            <label>{t('question')}</label>
-            <input
-              required
-              type="text"
-              value={locale == 'en' ? question?.question_en ?? "" : question?.question_ar ?? ""}
-              placeholder={t('question')}
-              onChange={(e) => saveQuestion(e.target.value, `question_${locale}`)}
-              className="placeholder:text-sm text-center px-3 border border-1 py-1 rounded-md  text-black border-black"
-            />
-          </div>
-          <div className="flex justify-between">
-            <label>{t('option')}</label>
-            <div className="">
-              {options.map((option, index) => (
-                <div key={index} className="flex items-center mb-2 justify-between">
-                  <input
-                    required={index < options.length-1}
-                    type="text"
-                    value={option}
-                    placeholder={t('option')}
-                    onChange={(e) => updateOption(index, e.target.value)}
-                    className="placeholder:text-sm text-center py-1 border border-1 rounded-md  w-3/4  text-black border-black "
-                  />
-
-                  {index + 1 == options.length ?
-                    <button onClick={addOption} className="rounded-md border border-black shadow-md px-2">
-                      +
-                    </button>
-                    :
-                    <input required checked={index == question?.answer} type="radio" className="" value={index} onChange={() => saveAnswer(index)} name="isAnswer" />
-                  }
-                </div>
-              ))}
-
+      <div className="w-3/5 mx-auto mt-6 ">
+        <div className="mb-10 text-center">           
+          <input
+            required
+            type="text"
+            placeholder={t('title')}
+            value={questTitle}
+            onChange={(e) => setQuestTitle(e.target.value)}
+            className="w-3/4 font-bold placeholder:text-sm text-center text-xl  border border-1 py-2 rounded-md  text-black border-black"
+          />
+        </div>
+        <form className="overflow-auto max-h-[60vh] px-10 border border-slate-600 rounded-sm py-6" onSubmit={(e) => saveQuiz(e)}>
+        {listQuestion.map((item: quizProps, idx: number) => (
+          <div key={idx} className="grid gap-x-4 grid-row-2 border-2 border-black p-5 rounded-md mb-7" >     
+            <div className="flex justify-between  mb-4">
+              <label>{t('question')}</label>
+              <input
+                required
+                type="text"
+                value={locale == 'en' ? item?.question_en ?? "" : item?.question_ar ?? ""}
+                placeholder={t('question')}
+                onChange={(e) => saveQuestion(e.target.value, `question_${locale}`, idx)}
+                className="w-10/12 placeholder:text-sm text-center px-3 border border-1 py-1 rounded-md  text-black border-black"
+              />
             </div>
+            <div className="flex justify-between">
+              <label>{t('option')}</label>
+              <div className="w-10/12">
+                {item[`answer_option_${locale}`]?.map((opt: string[], index: number) => (
+                  <div key={index} className="flex items-center mb-2 justify-between">
+                    <input
+                      required={index < item[`answer_option_${locale}`]?.length - 1}
+                      type="text"
+                      value={opt}
+                      placeholder={t('option')}
+                      onChange={(e) => updateOption(index, e.target.value, idx)}
+                      className="before:content-['ehheh'] placeholder:text-sm text-center py-1 border border-1 rounded-md  w-3/4  text-black border-black "
+                    />
+
+                    {index + 1  == item[`answer_option_${locale}`]?.length ?
+                      <button type="button" onClick={() => addOption(idx)} className="rounded-md border border-black shadow-md px-2">
+                        +
+                      </button>
+                      :
+                      <div className="flex items-center">
+                        <label className="mr-3 text-sm">Is Answer</label>
+                        <input required checked={index == item?.answer} type="radio" className="" value={index} onChange={() => saveQuestion(index, 'answer', idx)} name={`answer${idx}`} />
+                      </div>
+                    }
+                  </div>
+                ))}
+
+              </div>
+            </div>
+            </div>
+          ))}
+          </form>
+          <div className="mt-6 flex justify-between items-center">
+              <button className="border border-black rounded-md px-2 py-1" onClick={() => addQuestion()} type="button">{t('add-question')}</button>
+              <button type="submit" className="w-1/2  border text-white rounded-md p-2 bg-green-500 hover:bg-green-600  " >
+                {t('save')}
+              </button>
           </div>
-          <button type="submit" className="w-full mt-6 border border-black rounded-md p-2" >
-            {t('save')}
-          </button>
-        </form>
 
       </div>
     </div>

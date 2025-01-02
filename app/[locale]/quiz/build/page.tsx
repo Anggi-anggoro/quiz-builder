@@ -14,7 +14,6 @@ export default async function QuizPage() {
   }
 
   const {data } = await supabase.from("Quiz").select().eq('email', user.email) 
-  const quiz = data as quizProps[]
 
   return (
     <>

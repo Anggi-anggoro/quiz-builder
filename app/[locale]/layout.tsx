@@ -9,6 +9,9 @@ import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import "../globals.css";
 import Navbar from "@/components/navbar/navbar";
+import ChangeLang from "@/components/navbar/component/changeLang";
+import Link from "next/link";
+import TranslateText from "@/components/utils/translator";
 
 
 const geistSans = Geist({
@@ -29,7 +32,13 @@ export default async function RootLayout({
     <html lang={locale} className={geistSans.className}>
       <body>
         <NextIntlClientProvider messages={message}>
-        <Navbar locale={locale}/>
+        <header className="w-full flex items-center justify-between py-4 px-12 border-b">
+            <div className="flex">
+              <Link className="font-bold mr-6" href={'/'}><TranslateText comp="Header" text="home"/></Link>
+                <ChangeLang locale={locale}/>
+            </div>
+            {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+        </header>
         {children}
         </NextIntlClientProvider>
       </body>

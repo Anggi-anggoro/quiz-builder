@@ -3,7 +3,40 @@
         "title":"عنوان",
         "question":"سؤال",
         "option":"خيار",
-        "save": "يحفظ"
+        "save": "يحفظ",
+        "add-question":" إضافة سؤال",
+        "delete" : "حذف",
+        "edit" : "تعديل",
+        "question-list" : "قائمة الأسئلة",
+        "take-quiz" : "إجري الاختبار",
+        "submit" : "إرسال"
+    },
+
+    "Header" : {
+        "sign-in":"تسجيل الدخول،",
+        "sign-out":"تسجيل الخروج",
+        "sign-up":"التسجيل",
+        "language": "اللغة",
+        "english":"الإنجليزية",
+        "arabic":"العربية،",
+        "home":"الصفحة الرئيسية",
+        "hey":"مرحبًا"
+    },
+    "Homepage" : {
+        "welcome" : "مرحبًا بك",
+        "get-started" : "ابدأ",
+        "take-quiz": "أجري الاختبار",
+        "build-quiz" : "أنشئ الاختبار"
+    },
+    "Login" : {
+        "no-account" : "ليس لديك حساب؟",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "forgot": "نسيت كلمة المرور",
+        "your" : "حسابك",
+        "already-account" : "هل لديك حساب بالفعل؟",
+        "signing-in" :"جاري تسجيل الدخول...",
+        "submiting" : "تقديم..."
     }
 }
 
