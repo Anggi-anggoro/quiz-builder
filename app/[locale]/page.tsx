@@ -1,14 +1,7 @@
-import Hero from "@/components/hero";
-import Greeting from "@/components/homepage/greeting";
-import Navbar from "@/components/navbar/navbar";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
+
 import TranslateText from "@/components/utils/translator";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import { createClient } from "@/utils/supabase/client";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useTransition } from "react";
 
 export default async function Home() {
   const supabase = createClient()

@@ -139,7 +139,10 @@ export default function QuizBuilder(props: { email: string | undefined }) {
             className="w-3/4 font-bold placeholder:text-sm text-center text-xl  border border-1 py-2 rounded-md  text-black border-black"
           />
         </div>
-        <form className="overflow-auto max-h-[60vh] px-10 border border-slate-600 rounded-sm py-6" onSubmit={(e) => saveQuiz(e)}>
+        <form  onSubmit={(e) => saveQuiz(e)}>
+          <div className="overflow-auto max-h-[60vh] px-10 border border-slate-600 rounded-sm py-6">
+
+
         {listQuestion.map((item: quizProps, idx: number) => (
           <div key={idx} className="grid gap-x-4 grid-row-2 border-2 border-black p-5 rounded-md mb-7" >     
             <div className="flex justify-between  mb-4">
@@ -184,13 +187,14 @@ export default function QuizBuilder(props: { email: string | undefined }) {
             </div>
             </div>
           ))}
-          </form>
+          </div>
           <div className="mt-6 flex justify-between items-center">
               <button className="border border-black rounded-md px-2 py-1" onClick={() => addQuestion()} type="button">{t('add-question')}</button>
-              <button type="submit" className="w-1/2  border text-white rounded-md p-2 bg-green-500 hover:bg-green-600  " >
+              <button  type="submit" className="w-1/2  border text-white rounded-md p-2 bg-green-500 hover:bg-green-600  " >
                 {t('save')}
               </button>
           </div>
+          </form>
 
       </div>
     </div>
