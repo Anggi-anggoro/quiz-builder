@@ -4,8 +4,6 @@ import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 
 export default async function Home() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
 
   return (
     <div className="flex justify-center flex-col items-center absolute right-0 top-0 bottom-0 left-0 -z-10">

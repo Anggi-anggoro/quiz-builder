@@ -1,5 +1,3 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/utils/supabase/middleware";
 import createMiddleware from "next-intl/middleware"
 import { routing } from "./i18n/routing";
 
