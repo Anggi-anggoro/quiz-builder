@@ -9,7 +9,8 @@
         "edit" : "Edit",
         "question-list" : "Question List",
         "take-quiz" : "Take Quiz",
-        "submit" : "Submit"
+        "submit" : "Submit",
+        "answer" : "Answer"
     },
     "Header" : {
         "sign-in":"Sign-in",

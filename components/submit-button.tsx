@@ -18,7 +18,7 @@ export function SubmitButton({
 
   return (
     <Button type="submit" aria-disabled={pending} {...props}>
-      {pending ? <TranslateText comp="Login" text="email"/> : children}
+      {pending ? <TranslateText comp="Login" text={pendingText}/> : children}
     </Button>
   );
 }

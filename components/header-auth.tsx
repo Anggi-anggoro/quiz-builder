@@ -41,10 +41,12 @@ export default async function AuthButton() {
     );
   }
   return user ? (
-    <div className="flex items-center gap-4">
-      <TranslateText comp="Header" text="hey"/>, {user.email}!
+    <div className="items-center gap-4 flex">
+      <span className=" max-sm:hidden">
+        <TranslateText comp="Header" text="hey"/>, {user.email}!
+      </span>
       <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
+        <Button className="max-sm:text-xs max-sm:px-2 max-sm:py-1 max-sm:leading-none" type="submit" variant={"outline"}>
         <TranslateText comp="Header" text="sign-out"/>
         </Button>
       </form>

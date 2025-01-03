@@ -9,7 +9,8 @@
         "edit" : "تعديل",
         "question-list" : "قائمة الأسئلة",
         "take-quiz" : "إجري الاختبار",
-        "submit" : "إرسال"
+        "submit" : "إرسال",
+        "answer" : "إجابة"
     },
 
     "Header" : {

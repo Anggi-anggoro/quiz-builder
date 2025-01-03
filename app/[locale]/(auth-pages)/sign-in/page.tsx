@@ -23,12 +23,6 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
         <Input name="email" required />
         <div className="flex justify-between items-center">
           <Label htmlFor="password"><TranslateText comp="Login" text="password"/></Label>
-          <Link
-            className="text-xs text-foreground underline"
-            href="/forgot-password"
-          >
-            <TranslateText comp="Login" text="forgot"/>
-          </Link>
         </div>
         <Input
           type="password"

@@ -77,23 +77,24 @@ export default function ListQuiz(props: { email: string | undefined }) {
     }
 
     return (
-        <div className="flex">
-            <div className="overflow-y-auto  max-h-[80vh] p-8 mt-6 w-1/5">
-                {listQuiz?.map((item: string, idx) => (
-                    <div key={idx} className="p-4 border rounded-sm mb-2 flex justify-between  border-black">
-                        <div>
-                            <h2 className="font-bold">
-                                {item}
-                            </h2>
+        <div className="flex max-sm:flex-col-reverse justify-center items-center">
+            <div className="flex justify-center  border p-3 w-3/4 max-sm:px-5 max-sm:py-4 rounded sm:w-1/5">    
+                <div className="overflow-y-auto max-sm:flex sm:max-h-[80vh]">
+                    {listQuiz?.map((item: string, idx) => (
+                        <div key={idx} className="p-4 border rounded-sm mx-2 sm:mb-2 flex justify-between flex-col items-center border-black">                                
+                                <p className="font-bold text-sm mb-3">
+                                    {item}
+                                </p>                                
+                            <div className="flex flex-col sm:text-sm ">
+                                <button className="text-xs border p-1 px-2 rounded-md max-sm:px-9" onClick={() => getQuestionList(item)}><TranslateText comp="Quiz" text="take-quiz"/></button>
+                            </div>
                         </div>
-                        <div className="flex flex-col ">
-                            <button className="text-xs border p-1 px-2 rounded-md" onClick={() => getQuestionList(item)}><TranslateText comp="Quiz" text="take-quiz"/></button>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
+            <div className="m-9  pl-6 w-3/4 min-h-[50vh]">
             {listQuestion.length > 0 &&
-                <div className="m-9  pl-6 w-3/4 ">
+            <>
                     <h1 className="text-xl mb-7 font-bold text-center">{title}</h1>
                     <div className="border-2 shadow-md border-gray-500 rounded-md pr-10 h-3/4 overflow-auto">                       
                         {listQuestion.map((quest: quizProps, idx: number) => (
@@ -128,9 +129,9 @@ export default function ListQuiz(props: { email: string | undefined }) {
 
                         <button className="border border-black shadow-md bg-white rounded-sm py-1 px-3" onClick={() => handleSubmitQuiz()}><TranslateText comp="Quiz" text="submit"/></button>                           
                     </div>
-                </div>
-                
+                    </>
             }
+                </div>                
              
         </div>
     )
