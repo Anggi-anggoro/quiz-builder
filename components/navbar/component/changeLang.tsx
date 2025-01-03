@@ -11,6 +11,7 @@ export default function ChangeLang({ locale }: { locale: string }) {
         const newLang = e.target.value as string
         const path = pathName.split("/").slice(2).join("/")
         router.push(`/${newLang}/${path}`)
+        router.refresh()
     }
 
     return (
